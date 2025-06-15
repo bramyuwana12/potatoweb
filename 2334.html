@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KURSUS BAHASA INGGRIS DAN KOMPUTER DI DENPASAR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Gray-50, White, Indigo Accent) -->
+    <!-- Application Structure Plan: A dashboard-style single page application. Below, interactive filter buttons (for course type, delivery method, and certification) allow users to dynamically refine the main content area. The main content consists of a responsive grid of cards, each representing a course. This structure was chosen over a static table to provide a more engaging, intuitive, and mobile-friendly user experience, enabling quick comparison and filtering based on user needs. -->
+    <!-- Visualization & Content Choices: [Report Info: Full course list -> Goal: Organize/Compare -> Viz: Card-based Grid (HTML/Tailwind) -> Interaction: Filtering via JS buttons and clickable location link to Google Maps -> Justification: Cards offer better information hierarchy and mobile responsiveness than tables.]; [Report Info: Contact Info -> Goal: Action -> Viz: Button (HTML/Tailwind) -> Interaction: Click to open WhatsApp link -> Justification: Provides a direct call-to-action for users.]; All visualizations are rendered with structured HTML, adhering to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        .filter-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .filter-btn.active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <img src="https://placehold.co/150x150/f9fafb/000000?text=MR+POTATO" onerror="this.onerror=null;this.src='https://placehold.co/150x150/f9fafb/000000?text=Logo';" alt="Logo Mr Potato" class="mx-auto mb-4 rounded-full">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">KURSUS BAHASA INGGRIS DAN KOMPUTER DI DENPASAR</h1>
+            <p class="text-lg text-gray-600">Temukan Kursus Terbaik untuk Siswa SMP</p>
+        </header>
+        
+        <section id="introduction" class="mb-12 bg-white p-6 rounded-xl shadow-sm">
+            <p class="text-center text-gray-700">
+                Selamat datang di direktori interaktif kami. Aplikasi ini dirancang untuk membantu Anda menjelajahi berbagai pilihan kursus Bahasa Inggris dan Komputer yang tersedia di area Denpasar. Gunakan filter untuk menyaring daftar sesuai dengan preferensi Anda, baik berdasarkan jenis kursus, metode pembelajaran, maupun ketersediaan sertifikat.
+            </p>
+        </section>
+
+        <section id="filters" class="mb-10">
+            <h3 class="text-xl font-semibold text-center mb-5 text-gray-800">Filter Pilihan Anda</h3>
+            <div class="flex flex-wrap justify-center gap-3 md:gap-4">
+                <button onclick="filterCourses('all')" class="filter-btn active bg-indigo-600 text-white font-semibold py-2 px-5 rounded-full shadow-md hover:bg-indigo-700">Tampilkan Semua</button>
+                <button onclick="filterCourses('inggris')" class="filter-btn bg-white text-gray-700 font-semibold py-2 px-5 rounded-full border border-gray-300 hover:bg-gray-100">Bahasa Inggris</button>
+                <button onclick="filterCourses('komputer')" class="filter-btn bg-white text-gray-700 font-semibold py-2 px-5 rounded-full border border-gray-300 hover:bg-gray-100">Komputer</button>
+                <button onclick="filterCourses('online')" class="filter-btn bg-white text-gray-700 font-semibold py-2 px-5 rounded-full border border-gray-300 hover:bg-gray-100">Online</button>
+                <button onclick="filterCourses('offline')" class="filter-btn bg-white text-gray-700 font-semibold py-2 px-5 rounded-full border border-gray-300 hover:bg-gray-100">Offline</button>
+                 <button onclick="filterCourses('sertifikat-ya')" class="filter-btn bg-white text-gray-700 font-semibold py-2 px-5 rounded-full border border-gray-300 hover:bg-gray-100">Bersertifikat</button>
+            </div>
+        </section>
+
+        <main id="course-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </main>
+    </div>
+
+    <footer class="text-center p-6 mt-12 bg-gray-100">
+        <p class="text-gray-500">Direktori Interaktif &copy; 2025. Dibuat untuk memudahkan pencarian informasi pendidikan.</p>
+    </footer>
+
+    <script>
+        const courseData = [
+            { name: "IALF Bali", type: "inggris", delivery: "blended", certificate: "ya", location: "Jalan Raya Sesetan 190, Denpasar, Bali", phone: "+6282291109448", notes: "Program dinamis untuk SD & SMP, kelas baru setiap 2 minggu, kombinasi guru lokal & native speaker." },
+            { name: "UNMAS Denpasar English Course (U-Dance)", type: "inggris", delivery: "blended", certificate: "ya", location: "UPT Laboratorium dan Pusat Bahasa, Universitas Mahasaraswati Denpasar", phone: "0361227019", notes: "Tersedia kelas privat dan grup." },
+            { name: "English First (EF) Bali", type: "inggris", delivery: "blended", certificate: "ya", location: "Jalan Hayam Wuruk No. 210, Sumerta Kelod, Denpasar, Bali", phone: "website", notes: "Kurikulum berstandar internasional, pengajar tersertifikasi." },
+            { name: "English Academy (by Ruangguru)", type: "inggris", delivery: "blended", certificate: "ya", location: "Jalan Mahendradatta, Desa Padangsambian, Denpasar Barat, Bali", phone: "app", notes: "Kurikulum Cambridge, pengajar native dan lokal tersertifikasi." },
+            { name: "English Cafe", type: "inggris", delivery: "blended", certificate: "cek", location: "Jalan Gunung Soputan Nomor 16A, Denpasar Barat, Bali", phone: "website", notes: "Menawarkan General English Pre Beginner, cocok untuk pemula." },
+            { name: "EC (English Is Easy)", type: "inggris", delivery: "blended", certificate: "cek", location: "Kompleks Hokiland Unit 11, Jalan Jendral Gatot Subroto Nomor 888, Denpasar", phone: "website", notes: "Mengajarkan bahasa Inggris secara bertahap." },
+            { name: "Jolly Roger Education", type: "inggris", delivery: "blended", certificate: "cek", location: "Jalan Merdeka, Graha Merdeka Unit 16-17 Renon, Denpasar (5 cabang di Bali)", phone: "website", notes: "Mengajarkan bahasa Inggris secara bertahap." },
+            { name: "Fun English Course", type: "inggris", delivery: "online", certificate: "cek", location: "Berpusat di Jakarta, menawarkan kursus online untuk Bali", phone: "081288883063", notes: "Menawarkan pembelajaran online yang efektif." },
+            { name: "Computer Course Center", type: "komputer", delivery: "blended", certificate: "ya", location: "Jl. Nangka Selatan No. 39/83, Denpasar, Bali", phone: "081338582348", notes: "Lembaga terakreditasi A, memiliki izin operasional lengkap. Juga ada cabang di Tuban, Kuta." },
+            { name: "Ananta Course", type: "komputer", delivery: "offline", certificate: "ya", location: "Lokasi di Denpasar (tergantung wilayah, ada biaya transport untuk privat di rumah)", phone: "website", notes: "Bersertifikat resmi, legalitas lengkap. Menawarkan kursus komputer dasar untuk anak SMP." },
+            { name: "BALITOP TRAINING", type: "komputer", delivery: "offline", certificate: "ya", location: "Cek website untuk alamat lengkap di Denpasar", phone: "08174732579", notes: "Fokus pada kursus privat, materi bisa disesuaikan." },
+            { name: "Koding Akademi", type: "komputer", delivery: "offline", certificate: "ya", location: "Jl. Tukad Batanghari No.55, Panjer, Denpasar Selatan, Bali", phone: "+6281337373155", notes: "Menyediakan program khusus untuk anak-anak, membimbing dasar teknologi." },
+            { name: "Revolusi Skill", type: "komputer", delivery: "blended", certificate: "ya", location: "Cek website untuk alamat lengkap di Denpasar", phone: "085161899321", notes: "Menyediakan les komputer untuk SMP, kurikulum update, 90% praktik." },
+            { name: "Timedoor Academy", type: "komputer", delivery: "blended", certificate: "cek", location: "Jl. Gatot Subroto Barat No.408b, Ubung, Denpasar Utara, Bali", phone: "+6281337300237", notes: "Kursus seru: Coding, Desain, Roblox, AI. Kurikulum untuk remaja." },
+            { name: "Superprof", type: "komputer", delivery: "blended", certificate: "cek", location: "Beragam lokasi di Denpasar (tergantung guru)", phone: "website", notes: "Platform untuk menemukan guru privat dengan berbagai spesialisasi." }
+        ];
+
+        function renderCourses(coursesToRender) {
+            const grid = document.getElementById('course-grid');
+            grid.innerHTML = '';
+            coursesToRender.forEach(course => {
+                const deliveryTags = {
+                    'blended': 'Online & Offline',
+                    'online': 'Online',
+                    'offline': 'Offline'
+                };
+
+                const certificateTags = {
+                    'ya': 'Sertifikat Tersedia',
+                    'cek': 'Konfirmasi ke Penyedia'
+                };
+
+                const certificateColors = {
+                    'ya': 'bg-green-100 text-green-800',
+                    'cek': 'bg-yellow-100 text-yellow-800'
+                }
+
+                let contactButton;
+                if (course.phone === 'website' || course.phone === 'app') {
+                    contactButton = `<a href="#" class="mt-4 block w-full text-center bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">Kunjungi Situs/App</a>`;
+                } else if (course.phone.startsWith('+') || /^\d+$/.test(course.phone)) {
+                    let waNumber = course.phone.startsWith('+') ? course.phone.substring(1) : '62' + course.phone.substring(1);
+                    contactButton = `<a href="https://wa.me/${waNumber}" target="_blank" class="mt-4 block w-full text-center bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600 transition-colors">Hubungi via WhatsApp</a>`;
+                } else {
+                     contactButton = `<a href="#" class="mt-4 block w-full text-center bg-gray-400 text-white font-bold py-2 px-4 rounded-lg cursor-not-allowed">Kontak Tidak Tersedia</a>`;
+                }
+
+                const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(course.location)}`;
+
+                const card = `
+                    <div class="course-card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col p-5 transform hover:-translate-y-1 transition-transform duration-300" 
+                         data-type="${course.type}" 
+                         data-delivery="${course.delivery}"
+                         data-certificate="${course.certificate}">
+                        <div class="flex-grow">
+                            <div class="flex items-center mb-3">
+                                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full ${course.type === 'inggris' ? 'text-blue-600 bg-blue-200' : 'text-purple-600 bg-purple-200'}">
+                                    ${course.type.replace('inggris', 'Bahasa Inggris').replace('komputer', 'Komputer')}
+                                </span>
+                            </div>
+                            <h4 class="text-xl font-bold text-gray-900 mb-2">${course.name}</h4>
+                            <p class="text-gray-600 text-sm mb-4">
+                                <span class="font-semibold">📍 Lokasi:</span> 
+                                <a href="${googleMapsLink}" target="_blank" class="text-indigo-600 hover:underline">
+                                    ${course.location}
+                                </a>
+                            </p>
+                            <p class="text-gray-700 text-sm mb-4">${course.notes}</p>
+                        </div>
+                        <div class="mt-auto pt-4 border-t border-gray-200">
+                             <div class="flex flex-wrap gap-2 text-xs mb-4">
+                                <span class="font-semibold py-1 px-3 rounded-full ${certificateColors[course.certificate]}">${certificateTags[course.certificate]}</span>
+                                <span class="font-semibold py-1 px-3 rounded-full bg-gray-200 text-gray-700">${deliveryTags[course.delivery]}</span>
+                            </div>
+                            ${contactButton}
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+        
+        let activeFilter = 'all';
+
+        function filterCourses(filter) {
+            const allCards = document.querySelectorAll('.course-card');
+            activeFilter = filter;
+            updateFilterButtons();
+
+            allCards.forEach(card => {
+                const type = card.dataset.type;
+                const delivery = card.dataset.delivery;
+                const certificate = card.dataset.certificate;
+                let show = false;
+
+                switch(filter) {
+                    case 'all':
+                        show = true;
+                        break;
+                    case 'inggris':
+                        if (type === 'inggris') show = true;
+                        break;
+                    case 'komputer':
+                        if (type === 'komputer') show = true;
+                        break;
+                    case 'online':
+                        if (delivery === 'online' || delivery === 'blended') show = true;
+                        break;
+                    case 'offline':
+                        if (delivery === 'offline' || delivery === 'blended') show = true;
+                        break;
+                    case 'sertifikat-ya':
+                        if (certificate === 'ya') show = true;
+                        break;
+                }
+                card.style.display = show ? 'flex' : 'none';
+            });
+        }
+
+        function updateFilterButtons() {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(button => {
+                if (button.getAttribute('onclick') === `filterCourses('${activeFilter}')`) {
+                    button.classList.add('active', 'bg-indigo-600', 'text-white');
+                    button.classList.remove('bg-white', 'text-gray-700');
+                } else {
+                    button.classList.remove('active', 'bg-indigo-600', 'text-white');
+                    button.classList.add('bg-white', 'text-gray-700');
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCourses(courseData);
+        });
+
+    </script>
+</body>
+</html>
